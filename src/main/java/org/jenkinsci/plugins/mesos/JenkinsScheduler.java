@@ -341,7 +341,12 @@ public class JenkinsScheduler implements Scheduler {
             && slaveAttributesMatch(offer, slaveAttributes)) {
       return true;
     } else {
-      String requestedPorts = StringUtils.join(request.request.slaveInfo.getContainerInfo().getPortMappings().toArray(), "/");
+      String requestedPorts = "";
+      MesosSlaveInfo.ContainerInfo containerInfo = request.request.slaveInfo.getContainerInfo();
+      if (containerInfo != null &&
+          containerInfo.getPortMappings() != null ) {
+        requestedPorts = StringUtils.join(containerInfo.getPortMappings().toArray(), "/");
+      }
 
       LOGGER.fine(
           "Offer not sufficient for slave request:\n" +
